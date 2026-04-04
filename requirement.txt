@@ -3,3 +3,5 @@ apache-airflow-providers-pgvector
 langchain-openai
 langchain-community
 pypdf
+pendulum
+requests
