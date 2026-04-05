@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+langchain
+langchain-text-splitters
+python-multipart
+# Add extra RAG libraries here
+# sentence-transformers
+# openai

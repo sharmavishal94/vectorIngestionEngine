@@ -70,8 +70,36 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    volumes:
+      - ./crm/uploads:/app/uploads
     environment:
       DATABASE_URL: postgresql://airflow:airflow@postgres:5432/data_cloud
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  crm-backend:
+    build:
+      context: ./crm_backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/data_cloud
+      SPRING_DATASOURCE_USERNAME: airflow
+      SPRING_DATASOURCE_PASSWORD: airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  rag-engine:
+    build:
+      context: ./rag_engine
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./rag_engine:/app
     depends_on:
       postgres:
         condition: service_healthy
