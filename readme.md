@@ -42,3 +42,20 @@ https://github.com/godatadriven/data-pipelines-with-airflow-2nd-ed/tree/master
 
 
 docker-compose up -d --build crm
+
+
+
+# Pending 
+
+Adding Kubernetes
+
+[] Do I need MQ -> No Airflow is taking care of it.
+
+Agentic Experience
+
+[] I need to add Agentic Experience as well.
+
+Otel
+
+[] I need to add Otel for Observability.
+
