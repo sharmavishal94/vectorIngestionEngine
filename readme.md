@@ -59,3 +59,10 @@ Otel
 
 [] I need to add Otel for Observability.
 
+
+
+docker-compose restart rag-engine
+
+
+docker-compose logs rag-engine
+

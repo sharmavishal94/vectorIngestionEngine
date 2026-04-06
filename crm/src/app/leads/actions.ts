@@ -198,3 +198,29 @@ export async function deleteLead(formData: FormData) {
   revalidatePath("/leads");
   redirect("/leads");
 }
+
+export async function askAgentAction(query: string): Promise<{ response: string }> {
+  try {
+    const response = await fetch("http://rag-engine:8000/agent/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: query,
+        history: [] // You can implement history persistence later if needed
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`RAG Engine error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return { response: data.response };
+  } catch (error) {
+    console.error("Agent bridge error:", error);
+    // Fallback to local simulation if backend is down
+    return { response: "I'm having trouble reaching the LangChain agent. Please ensure the `rag-engine` service is healthy." };
+  }
+}

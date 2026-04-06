@@ -41,6 +41,64 @@ async def generate_embeddings(text: str):
     # In a real implementation, you would call a model here.
     return {"message": f"Embedding logic for: {text[:50]}..."}
 
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_classic.agents import AgentExecutor, create_tool_calling_agent
+from langchain_classic.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_classic.tools import Tool
+import os
+
+# Initialize components
+llm = ChatGoogleGenerativeAI(
+    model="gemini-pro",
+    temperature=0,
+    google_api_key=os.getenv("GOOGLE_API_KEY", "your-placeholder-key")
+)
+
+# Example dummy tool (to demonstrate agent functionality)
+def get_leads_summary(query: str):
+    """Summarizes status of data ingestion and CRM leads."""
+    return "All leads successfully chunked! Airflow pipeline is currently active."
+
+tools = [
+    Tool(
+        name="CRM_Summarizer",
+        func=get_leads_summary,
+        description="Useful for summarizing CRM data or pipeline status."
+    )
+]
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful CRM and Data Assistant. Use tools when needed to answer questions."),
+    MessagesPlaceholder(variable_name="chat_history", optional=True),
+    ("user", "{input}"),
+    MessagesPlaceholder(variable_name="agent_scratchpad"),
+])
+
+# Build the Agent
+agent = create_tool_calling_agent(llm, tools, prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+
+class ChatRequest(BaseModel):
+    message: str
+    history: List[dict] = []
+
+@app.post("/agent/chat")
+async def agent_chat(request: ChatRequest):
+    """
+    Handle a conversational query using a LangChain agent.
+    """
+    try:
+        # In a real setup, parse history into LangChain messages
+        # agent_executor.invoke handles input key map
+        result = agent_executor.invoke({
+            "input": request.message,
+            "chat_history": [] 
+        })
+        return {"response": result["output"]}
+    except Exception as e:
+        print(f"Agent error: {e}")
+        return {"response": "I'm having internal thoughts... (Agent error occurred)"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

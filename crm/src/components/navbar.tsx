@@ -29,6 +29,12 @@ export function Navbar() {
           >
             Leads
           </Link>
+          <Link
+            href="/agents"
+            className={`nav-link ${pathname === "/agents" ? "active" : ""}`}
+          >
+            Agents
+          </Link>
         </div>
         <div className="nav-user">
           <Link href="/login" className="logout-btn">
