@@ -200,6 +200,7 @@ export async function deleteLead(formData: FormData) {
 }
 
 export async function askAgentAction(query: string): Promise<{ response: string }> {
+  console.log("Query: ", query);
   try {
     const response = await fetch("http://rag-engine:8000/agent/chat", {
       method: "POST",

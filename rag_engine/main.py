@@ -49,7 +49,7 @@ import os
 
 # Initialize components
 llm = ChatGoogleGenerativeAI(
-    model="gemini-pro",
+    model="gemini-1.5-pro",
     temperature=0,
     google_api_key=os.getenv("GOOGLE_API_KEY", "your-placeholder-key")
 )
@@ -87,6 +87,10 @@ async def agent_chat(request: ChatRequest):
     """
     Handle a conversational query using a LangChain agent.
     """
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if api_key == "your-placeholder-key" or not api_key:
+        return {"response": "The agent is reachable, but the Google API Key is not configured. Please add `GOOGLE_API_KEY` to your docker-compose.yaml or environment."}
+
     try:
         # In a real setup, parse history into LangChain messages
         # agent_executor.invoke handles input key map
@@ -97,6 +101,9 @@ async def agent_chat(request: ChatRequest):
         return {"response": result["output"]}
     except Exception as e:
         print(f"Agent error: {e}")
+        error_str = str(e)
+        if "API key not valid" in error_str or "API_KEY_INVALID" in error_str:
+            return {"response": "The agent is reachable, but the Google API Key provided is invalid."}
         return {"response": "I'm having internal thoughts... (Agent error occurred)"}
 
 if __name__ == "__main__":

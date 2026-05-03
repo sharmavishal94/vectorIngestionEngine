@@ -37,6 +37,7 @@ export function AgentChat() {
     setIsTyping(true);
 
     try {
+      console.log('h')
       const res = await askAgentAction(userMessage);
       setMessages((prev) => [
         ...prev,

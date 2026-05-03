@@ -1,9 +1,25 @@
 # Project 
-- Status: New
 
-This Project is an attmpt to create my own Ingestion Engine
-1. It runs using postgres to store Vector Embedding.
-2. Using Airflow DAGs for scheduling
+Status: In-Progress
+
+This Project is an attmpt to do multiple things at a time.
+1. Create my Own Mini CRM.
+2. Create my own Ingestion Engine to ingest data from multiple sources.
+3. Create a RAG system to query the data.
+4. Create Agentic Experience around the same to make agents that can perform tasks.
+  - Create my Own Orchestration Layer.
+  - Create my Own Tooling Layer.
+  - Create my Own Memory Layer.
+  - Create my Own Knowledge Base Layer.
+  - Create my Own Prompt Management Layer.
+5. Observability using Otel
+6. Deploy using Kubernetes 
+
+# Tech Stack
+
+CRM - Next.js + FastAPI
+Ingestion Engine - Python + FastAPI + Airflow DAGs
+Database - Postgres + pgvector for Vector Embedding.
 
 # Below are the commands
 
@@ -18,7 +34,7 @@ docker compose exec postgres psql -U airflow -d data_cloud
 
 \dt *.*
 
-## CRM (Next.js, `app` schema)
+# CRM (Next.js, `app` schema)
 
 Contacts are stored in Postgres schema **`app`** (not `raw`). `raw.*` remains the Airflow landing zone.
 
@@ -28,10 +44,12 @@ Contacts are stored in Postgres schema **`app`** (not `raw`). `raw.*` remains th
   `docker compose exec -T postgres psql -U airflow -d data_cloud -f /docker-entrypoint-initdb.d/01-app-schema.sql`  
   (or rely on CRM server startup, which runs the same DDL via `instrumentation`).
 
+docker-compose up -d --build crm
+docker-compose restart rag-engine
+docker-compose logs rag-engine
+
 
 # vectorIngestionEngine
-
-
 
 UXhVCVaCZeTEGNUF
 
@@ -41,28 +59,20 @@ docker exec -it my_data_cloud-airflow-webserver-1 cat /opt/airflow/simple_auth_m
 https://github.com/godatadriven/data-pipelines-with-airflow-2nd-ed/tree/master
 
 
-docker-compose up -d --build crm
 
 
 
-# Pending 
-
-Adding Kubernetes
-
-[] Do I need MQ -> No Airflow is taking care of it.
-
-Agentic Experience
-
-[] I need to add Agentic Experience as well.
-
-Otel
-
-[] I need to add Otel for Observability.
 
 
 
-docker-compose restart rag-engine
+# Pending Features
+Check Git Project Tracker.
+https://github.com/users/sharmavishal94/projects/2
 
 
-docker-compose logs rag-engine
+# Logging
 
+docker logs my_data_cloud-rag-engine-1 | tail -n 20
+
+
+docker exec my_data_cloud-crm-1 wget -qO- --post-data '{"message": "Hello"}' --header="Content-Type: application/json" http://rag-engine:8000/agent/chat
