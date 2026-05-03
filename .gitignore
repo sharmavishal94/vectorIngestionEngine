@@ -6,3 +6,4 @@ crm/.next
 **/__pycache__
 *.pyc
 .airflow_config_dump.txt
+.env
