@@ -69,6 +69,8 @@ https://github.com/godatadriven/data-pipelines-with-airflow-2nd-ed/tree/master
 Check Git Project Tracker.
 https://github.com/users/sharmavishal94/projects/2
 
+I need to change the architecture.
+AI Agent and RAG needs to go Separate Service.
 
 # Logging
 
@@ -76,3 +78,4 @@ docker logs my_data_cloud-rag-engine-1 | tail -n 20
 
 
 docker exec my_data_cloud-crm-1 wget -qO- --post-data '{"message": "Hello"}' --header="Content-Type: application/json" http://rag-engine:8000/agent/chat
+
